@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-f@^6923(qt3*lbf%bf=ekqa%0*09*y1umuumjvh6tda92^7&xx
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']   #WARNING
+ALLOWED_HOSTS = ['*']   #WARNING dont run with all allowed hosts in production
 
 
 # Application definition
@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    'django_filters',
+    'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'users.apps.UsersConfig',
     'api_pagos.apps.ApiPagosConfig'
@@ -138,9 +140,22 @@ CORS_ALLOW_ALL_ORIGINS = False
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+    "DEFAULT_AUTHENTICATION_CLASSES": (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
+        ),
+    "DEFAULT_PAGINATION_CLASS" : "rest_framework.pagination.PageNumberPagination", #agregar paginacion
+    "PAGE_SIZE": 100,
+    "DEFAULT_FILTER_BACKEND":["django_filters.rest_framework.DjangoFilterBackend"],
+    "DEFAULT_THROTTLE_CLASSES": [
+        # 'rest_framework.throttling.AnonRateThrottle', # anonimos
+        # 'rest_framework.throttling.UserRateThrottle', # usuarios logueados
+        'rest_framework.throttling.ScopedRateThrottle'
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        # 'anon': '100/day',
+        # 'user': '50/day',
+        'create_payment': '1/min',
+    },
 }
 
 AUTH_USER_MODEL = 'users.User'

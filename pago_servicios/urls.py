@@ -14,9 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path,re_path
+from api_pagos.v1.router import api_urlpatterns as api_v1
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/',include('users.urls')),
+    re_path(r'^api/v1/',include(api_v1) )
 ]
