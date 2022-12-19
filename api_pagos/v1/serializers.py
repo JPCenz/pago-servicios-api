@@ -13,12 +13,12 @@ class PaymentUserSerializer(ModelSerializer):
         model = models.PaymentUser
         fields= "__all__"
         # read_only_fields= ("expiration_date",)
-    def create(self, validated_data:dict):
-        p = validated_data.get("payment_date")
-        validated_data["expiration_date"]= p + datetime.timedelta(days=30)
-        payment = super().create(validated_data)
+    # def create(self, validated_data:dict):
+    #     p = validated_data.get("payment_date")
+    #     validated_data["expiration_date"]= p + datetime.timedelta(days=30)
+    #     payment = super().create(validated_data)
         
-        return payment
+    #     return payment
         
 
 class ExpiredPayments(ModelSerializer):
