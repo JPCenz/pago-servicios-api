@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework.renderers import TemplateHTMLRenderer
 from django_filters.rest_framework import DjangoFilterBackend
+from .pagination import StandardResultsSetPagination
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 
 
@@ -14,6 +16,9 @@ class PaymentUserViewSet(GenericViewSet):
     serializer_class= PaymentUserSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('service','payment_date','user')
+    throttle_scope = 'pagos'
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [IsAuthenticated]
 
     def list(self,request):
         queryset = self.filter_queryset(self.get_queryset())
@@ -46,3 +51,6 @@ class ServiceViewSet(ModelViewSet):
     serializer_class= ServiceSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('name', 'description')
+    throttle_scope = 'servicios'
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [IsAuthenticated]
