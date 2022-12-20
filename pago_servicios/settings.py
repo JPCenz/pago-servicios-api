@@ -169,12 +169,12 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 100,
     "DEFAULT_FILTER_BACKEND":["django_filters.rest_framework.DjangoFilterBackend"],
     "DEFAULT_THROTTLE_CLASSES": [
-        # 'rest_framework.throttling.AnonRateThrottle', # anonimos
+        'rest_framework.throttling.AnonRateThrottle', # anonimos
         # 'rest_framework.throttling.UserRateThrottle', # usuarios logueados
         'rest_framework.throttling.ScopedRateThrottle'
     ],
     "DEFAULT_THROTTLE_RATES": {
-        # 'anon': '100/day',
+        'anon': '1/min',
         # 'user': '50/day',
         'create_payment': '1/min',
     },
