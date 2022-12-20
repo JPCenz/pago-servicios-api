@@ -24,6 +24,8 @@ class PaymentUser(models.Model):
     class Meta:
         ordering = ["-id"]
 
+    def __str__(self):
+        return f"{self.user} {self.service} {self.payment_date}"
 
 class ExpiredPayments(models.Model):
     payment_user = models.OneToOneField(PaymentUser, on_delete=models.CASCADE)
