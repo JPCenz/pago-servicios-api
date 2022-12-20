@@ -141,6 +141,16 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    # #Agregado por cesarqr
+    # "DEFAULT_THROTTLE_CLASSES":[
+    #     'rest_framework.throttling.AnonRateThrottle', #usuarios anonimos
+    #     'rest_framework.throttling.UserRateThrottle', #usuarios logeados
+    # ],
+    # "DEFAULT_THROTTLE_RATES": {
+    #     'anon': '3/day',
+    #     'user': '7/day',
+    # }
+    
 }
 
 AUTH_USER_MODEL = 'users.User'
