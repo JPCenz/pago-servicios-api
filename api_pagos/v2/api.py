@@ -29,7 +29,6 @@ class PaymentUserViewSet(ModelViewSet):
         return [permission() for permission in permission_classes]
 
 
-
 class ServiceViewSet(ModelViewSet):
     serializer_class = ServiceSerializer
     queryset = Service.objects.all()
@@ -49,8 +48,7 @@ class ServiceViewSet(ModelViewSet):
         return [permission() for permission in permission_classes]
 
 
-
-class ExpiredPaymentsViewSet(ModelViewSet):
+class ExpiredPaymentsViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.CreateModelMixin, GenericViewSet):
     serializer_class = ExpiredPaymentsSerializer
     queryset = ExpiredPayments.objects.all()
     throttle_scope = 'expired'
