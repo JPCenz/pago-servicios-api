@@ -3,8 +3,9 @@ from rest_framework import generics, status
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_yasg.utils import swagger_auto_schema
 
-from .serializers import SignUpSerializer, GetUserSerializer
+from .serializers import SignUpSerializer, GetUserSerializer,LoginSerializer
 from .tokens import create_jwt_pair_for_user
 from rest_framework import viewsets
 from .models import User
@@ -29,11 +30,12 @@ class SignUpView(generics.GenericAPIView):
 
 
 class LoginView(APIView):
+    serializer_class=LoginSerializer
 
+    @swagger_auto_schema(request_body=LoginSerializer(many=False),responses={200:"user"})
     def post(self, request: Request):
         email = request.data.get("email")
         password = request.data.get("password")
-
         user = authenticate(email=email, password=password)
         if user is not None:
             tokens = create_jwt_pair_for_user(user)
