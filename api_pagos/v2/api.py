@@ -5,6 +5,7 @@ from .serializers import ExpiredPaymentsSerializer, PaymentUserSerializer, Servi
 from ..models import ExpiredPayments, PaymentUser, Service
 from django_filters.rest_framework import DjangoFilterBackend
 from .paginacion import StandardResultsSetPagination
+from .utils import is_payment_expired
 
 
 
@@ -17,16 +18,27 @@ class PaymentUserViewSet(ModelViewSet):
     pagination_class= StandardResultsSetPagination
 
     def get_permissions(self):
-        if self.action == "list":
+        if self.action == "list" or "retrieve":
             permission_classes = [
-                AllowAny,
+                IsAuthenticated,
             ]
         elif self.action == "create":
-            permission_classes = [AllowAny]
+            permission_classes = [IsAuthenticated]
         else:
             permission_classes = [IsAdminUser]
 
         return [permission() for permission in permission_classes]
+
+    def list(self, request, *args, **kwargs):
+
+        #Busca los pagos que hayan expirado segun la fecha de hoy cada vez que hace get 
+        for e in self.queryset:
+            is_expired_exists = ExpiredPayments.objects.filter(payment_user=e).exists()
+            if is_payment_expired(e.expiration_date) and not is_expired_exists:
+                instance =ExpiredPayments(payment_user=e,penalty_fee_amount=e.amount*1.2)
+                instance.save()
+                
+        return super().list(request, *args, **kwargs)
 
 
 class ServiceViewSet(ModelViewSet):
@@ -34,14 +46,16 @@ class ServiceViewSet(ModelViewSet):
     queryset = Service.objects.all()
     throttle_scope = 'service'
     pagination_class= StandardResultsSetPagination
+    http_method_names=["get","post","head","options"]
 
+    
     def get_permissions(self):
-        if self.action == "list":
+        if self.action == "list" or "retrieve":
             permission_classes = [
                 IsAuthenticated,
             ]
-        # elif self.action == "create":
-        #     permission_classes = [IsAuthenticated]
+        elif self.action == "create":
+            permission_classes = [IsAuthenticated]
         else:
             permission_classes = [IsAdminUser]
 
@@ -55,7 +69,7 @@ class ExpiredPaymentsViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, m
     pagination_class= StandardResultsSetPagination
 
     def get_permissions(self):
-        if self.action == "list":
+        if self.action == "list" or "retrieve":
             permission_classes = [
                 IsAuthenticated,
             ]
