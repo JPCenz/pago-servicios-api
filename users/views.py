@@ -9,7 +9,6 @@ from .serializers import SignUpSerializer, GetUserSerializer,LoginSerializer
 from .tokens import create_jwt_pair_for_user
 from rest_framework import viewsets
 from .models import User
-# Create your views here.
 
 class SignUpView(generics.GenericAPIView):
     serializer_class = SignUpSerializer
@@ -39,8 +38,17 @@ class LoginView(APIView):
         user = authenticate(email=email, password=password)
         if user is not None:
             tokens = create_jwt_pair_for_user(user)
+            is_active = user.is_active
+            is_staff = user.is_staff
 
-            response = {"message": "Logeado correctamente", "email": email ,"tokens": tokens}
+            response = {
+                "message": "Logeado correctamente", 
+                "email": email ,
+                "tokens": tokens,
+                "roles":{"is_user":is_active,"is_admin":user.is_staff},
+                "id":user.pk
+                }
+                
             return Response(data=response, status=status.HTTP_200_OK)
 
         else:
