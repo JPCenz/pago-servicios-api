@@ -24,7 +24,7 @@ class PaymentUserSerializer(ModelSerializer):
         
 
 class ExpiredPaymentsSerializer(ModelSerializer):
-    paymnet_user = PrimaryKeyRelatedField(many=False, read_only=True)
+    payment_user = PrimaryKeyRelatedField(many=False, read_only=True)
 
     class Meta:
         model = models.ExpiredPayments

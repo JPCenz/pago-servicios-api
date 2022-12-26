@@ -68,6 +68,8 @@ class ExpiredPaymentsViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, m
     queryset = ExpiredPayments.objects.all()
     throttle_scope = 'expired'
     pagination_class= StandardResultsSetPagination
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ("payment_user",)
 
     def get_permissions(self):
         if self.action == "list" or "retrieve":
